@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace FinalEkz
 {
@@ -108,56 +109,19 @@ namespace FinalEkz
             }
             else
             {
-                // No match, close cards after a short delay
-                System.Threading.Thread.Sleep(1000);
-                if (openedCard1 != null)
-                {
-                    openedCard1.Content = new Image
-                    {
-                        Source = new BitmapImage(new Uri("Images/side.jpg", UriKind.Relative)),
-                        Stretch = Stretch.Fill,
-                    };
-                }
-                if (openedCard2 != null)
-                {
-                    openedCard2.Content = new Image
-                    {
-                        Source = new BitmapImage(new Uri("Images/side.jpg", UriKind.Relative)),
-                        Stretch = Stretch.Fill,
-                    };
-                }
-            }
+                Button currentOpenedCard1 = openedCard1;
+                Button currentOpenedCard2 = openedCard2;
 
-            openedCard1 = null;
-            openedCard2 = null;
-            UpdateAttemptsLabel();
-
-            // Check if all pairs are matched
-            if (matchedPairs == NumberOfPairs)
-            {
-                MessageBox.Show("Congratulations! You've won!");
-            }
-            // Check if maximum attempts reached
-            else
-            {
                 // No match, close cards after a short delay
-                System.Threading.Thread.Sleep(1000);
-                if (openedCard1 != null)
+                DispatcherTimer timer = new DispatcherTimer();
+                timer.Interval = TimeSpan.FromSeconds(1);
+                timer.Tick += (sender, e) =>
                 {
-                    openedCard1.Content = new Image
-                    {
-                        Source = new BitmapImage(new Uri("Images/side.jpg", UriKind.Relative)),
-                        Stretch = Stretch.Fill,
-                    };
-                }
-                if (openedCard2 != null)
-                {
-                    openedCard2.Content = new Image
-                    {
-                        Source = new BitmapImage(new Uri("Images/side.jpg", UriKind.Relative)),
-                        Stretch = Stretch.Fill,
-                    };
-                }
+                    timer.Stop();
+                    ((Image)currentOpenedCard1.Content).Source = new BitmapImage(new Uri("Images/side.jpg", UriKind.Relative));
+                    ((Image)currentOpenedCard2.Content).Source = new BitmapImage(new Uri("Images/side.jpg", UriKind.Relative));
+                };
+                timer.Start();
             }
 
             openedCard1 = null;
@@ -174,6 +138,12 @@ namespace FinalEkz
             {
                 MessageBox.Show("Sorry! You've reached the maximum number of attempts. Game Over!");
             }
+        }
+
+        private void CloseCards()
+        {
+            ((Image)openedCard1.Content).Source = new BitmapImage(new Uri("Images/side.jpg", UriKind.Relative));
+            ((Image)openedCard2.Content).Source = new BitmapImage(new Uri("Images/side.jpg", UriKind.Relative));
         }
 
         private void UpdateAttemptsLabel()
