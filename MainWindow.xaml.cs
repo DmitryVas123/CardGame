@@ -139,7 +139,7 @@ namespace FinalEkz
                 MessageBox.Show("Sorry! You've reached the maximum number of attempts. Game Over!");
             }
         }
-
+        
         private void CloseCards()
         {
             ((Image)openedCard1.Content).Source = new BitmapImage(new Uri("Images/side.jpg", UriKind.Relative));
